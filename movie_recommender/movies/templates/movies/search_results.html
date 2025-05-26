@@ -1,0 +1,56 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>Search Results</h2>
+    <p>Showing results for "{{ query }}"</p>
+</div>
+
+<div class="row">
+    {% if movies %}
+        {% for movie in movies %}
+        <div class="col-md-4 mb-4">
+            <div class="card movie-card">
+                {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" class="card-img-top movie-poster" alt="{{ movie.title }} poster">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text">{{ movie.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= movie.rating|floatformat:0 %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="duration">
+                            <i class="bi bi-clock"></i> {{ movie.get_duration }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'rate_movie' movie.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="number" name="rating" min="1" max="5" step="0.5" class="form-control" required>
+                                <button type="submit" class="btn btn-primary btn-sm">Rate</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center">
+            <p class="lead">No movies found matching your search.</p>
+            <p class="text-muted">Try searching with different keywords or browse our collection.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

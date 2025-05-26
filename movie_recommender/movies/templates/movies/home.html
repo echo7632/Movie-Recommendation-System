@@ -1,0 +1,107 @@
+{% extends 'movies/base.html' %}
+{% load static %}
+
+{% block title %}Home - MovieMessiah{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Discover Your Next Favorite Movie</h1>
+        <p class="lead mb-4">Find personalized recommendations based on your taste</p>
+        <a href="{% url 'recommendations' %}" class="btn btn-primary btn-lg">Get Recommendations</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Featured Movies Section -->
+    <div class="section-header mb-4">
+        <h2 class="d-inline-block me-3">Featured Movies</h2>
+        <div class="btn-group" role="group">
+            <a href="#trending" class="btn btn-outline-primary active" data-bs-toggle="tab">Trending</a>
+            <a href="#coming-soon" class="btn btn-outline-primary" data-bs-toggle="tab">Coming Soon</a>
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <!-- Trending Now -->
+        <div class="tab-pane fade show active" id="trending">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                {% for movie in movies|slice:":10" %}
+                <div class="col">
+                    <div class="card h-100 movie-card">
+                        <a href="{% url 'rate_movie' movie.id %}" class="text-decoration-none text-white">
+                            {% if movie.poster_url %}
+                                <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}">
+                            {% else %}
+                                <div class="card-img-top bg-dark d-flex align-items-center justify-content-center" style="height: 300px;">
+                                    <i class="fas fa-film fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate">{{ movie.title }}</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="rating text-warning">
+                                        {% with ''|center:movie.rating as range %}
+                                            {% for _ in range %}★{% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <small class="text-muted">{{ movie.year }}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Coming Soon -->
+        <div class="tab-pane fade" id="coming-soon">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                {% for movie in movies|slice:"10:20" %}
+                <div class="col">
+                    <div class="card h-100 movie-card">
+                        <div class="position-relative">
+                            {% if movie.poster_url %}
+                                <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}">
+                            {% else %}
+                                <div class="card-img-top bg-dark d-flex align-items-center justify-content-center" style="height: 300px;">
+                                    <i class="fas fa-film fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <span class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded">Coming Soon</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie.title }}</h5>
+                            <p class="card-text text-muted small">Coming Soon</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Genre Section -->
+    <div class="section-header mt-5 mb-4">
+        <h2>Browse by Genre</h2>
+        <p>Explore movies by your favorite genres</p>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4 mb-5">
+        {% for genre in genres %}
+        <div class="col">
+            <a href="{% url 'genre_movies' genre_name=genre %}" class="text-decoration-none">
+                <div class="card genre-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas {% cycle 'fa-film' 'fa-tv' 'fa-star' 'fa-play' 'fa-video' 'fa-music' 'fa-theater-masks' 'fa-mask' %} mb-2" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mb-0">{{ genre }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'movies/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header text-center my-5">
+        <h1>{{ genre }} Movies</h1>
+        <p class="lead">Browse our collection of {{ total_movies }} {{ genre }} movies</p>
+    </div>
+
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card movie-card h-100">
+                {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" class="card-img-top movie-poster" alt="{{ movie.title }} poster">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="rating">
+                                {% with ''|center:movie.rating as range %}
+                                    {% for _ in range %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <div class="duration">
+                                <i class="far fa-clock"></i> {{ movie.duration }}
+                            </div>
+                        </div>
+                        <a href="{% url 'rate_movie' movie.id %}" class="btn btn-sm btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if movies.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if movies.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ movies.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for num in movies.paginator.page_range %}
+                {% if movies.number == num %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if movies.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ movies.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

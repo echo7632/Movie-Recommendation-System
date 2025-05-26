@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMessiah - {% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #2c3e50;
+            --accent-color: #ff4d4d;
+            --text-color: #ffffff;
+            --hover-color: #ff6b6b;
+            --gradient-start: #2c0033;
+            --gradient-end: #4c005c;
+            --gradient-1: linear-gradient(135deg, #2c0033, #4c005c);
+            --gradient-2: linear-gradient(135deg, #4c005c, #6c007c);
+            --gradient-3: linear-gradient(135deg, #6c007c, #4c005c);
+            --text-color: #ecf0f1;
+            --hover-color: #2980b9;
+            --gradient-start: #1a1a1a;
+            --gradient-end: #2c3e50;
+            --animation-duration: 0.6s;
+            --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-1: linear-gradient(135deg, #1a1a1a, #2c3e50);
+            --gradient-2: linear-gradient(135deg, #2c3e50, #34495e);
+            --gradient-3: linear-gradient(135deg, #34495e, #2c3e50);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        body {
+            background: var(--gradient-1);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .navbar {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            animation: fadeIn 0.8s ease-out;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color) !important;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        .search-container {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem 0;
+            margin-top: 70px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-2);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .search-bar {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            font-size: 1.2rem;
+            background: var(--secondary-color);
+            border: 2px solid transparent;
+            border-radius: 30px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out 0.4s backwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            animation: fadeIn 0.6s ease-out 0.4s backwards;
+        }
+
+        .movie-card {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out 0.6s backwards;
+            position: relative;
+        }
+
+        .movie-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-3);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-poster {
+            height: 450px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+            filter: brightness(0.9);
+        }
+
+        .card-body {
+            padding: 1.8rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            animation: fadeIn 0.6s ease-out 0.8s backwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-title {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.6s ease-out 0.9s backwards;
+            letter-spacing: 1px;
+        }
+
+        .card-text {
+            color: #abb2b9;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            animation: fadeIn 0.6s ease-out 1s backwards;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .rating {
+            color: #f1c40f;
+            font-size: 1.2rem;
+            animation: fadeIn 0.6s ease-out 1.1s backwards;
+            font-weight: 500;
+        }
+
+        .duration {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: #abb2b9;
+            margin-top: 0.5rem;
+            animation: fadeIn 0.6s ease-out 1.2s backwards;
+            font-weight: 500;
+        }
+
+        .duration i {
+            font-size: 0.9rem;
+            color: #f1c40f;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .form-control {
+            background: var(--secondary-color);
+            border: 1px solid #34495e;
+            color: var(--text-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .form-control:focus {
+            background: var(--secondary-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--hover-color));
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out 1.3s backwards;
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.6s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            color: white;
+            border: none;
+        }
+
+        .main-content {
+            margin-top: 150px;
+            flex: 1;
+            padding-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out 0.4s backwards;
+            position: relative;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .section-header p {
+            color: #abb2b9;
+            font-size: 1.1rem;
+            animation: fadeIn 0.6s ease-out 0.6s backwards;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                padding: 2rem 1rem;
+            }
+
+            .search-input {
+                font-size: 1rem;
+                padding: 1rem 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Add a shimmering effect on hover for movie cards */
+        /* Tab Navigation */
+        .nav-tabs {
+            border: none;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+
+        .nav-tabs .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            transition: all 0.3s var(--ease-out);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tabs .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--accent-color);
+            transition: all 0.3s var(--ease-out);
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-tabs .nav-link.active::before {
+            width: 60%;
+        }
+
+        .tab-content {
+            animation: fadeIn 0.5s var(--ease-out);
+        }
+
+        /* Coming Soon Badge */
+        .coming-soon-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .coming-soon .card-img-top {
+            opacity: 0.7;
+            filter: grayscale(20%);
+        }
+
+        .coming-soon .card-title {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .release-date {
+            color: var(--accent-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .movie-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .movie-card:hover::after {
+            left: 100%;
+        }
+
+        /* Add a pulsing effect for the search icon */
+        .search-icon {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Add a gradient border for buttons */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0.1)
+            );
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">MovieMessiah</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'recommendations' %}">Recommendations</a>
+                    </li>
+                </ul>
+                
+                <form class="d-flex me-3" action="{% url 'home' %}" method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Search movies...">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container py-4">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+    <script>
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script><!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</body>
+</html>
